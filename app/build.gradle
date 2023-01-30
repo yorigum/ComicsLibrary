@@ -4,6 +4,9 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
 }
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
 
 android {
@@ -21,6 +24,9 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        buildConfigField("String","MARVEL_KEY",apikeyProperties['MARVEL_KEY'])
+        buildConfigField("String","MARVEL_SECRET",apikeyProperties['MARVEL_SECRET'])
     }
 
     buildTypes {
@@ -55,6 +61,7 @@ def lifecycle_version = "2.5.1"
 def retrofit_version = "2.9.0"
 def hilt_version = "2.43.2"
 def room_version = "2.5.0"
+
 
 dependencies {
 
