@@ -8,10 +8,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 object ApiService {
-    private const val BASE_URL = "https://gateaway.marvel.com/v1/public/"
+    private const val BASE_URL = "https://gateway.marvel.com/v1/public/"
     
     private fun getRetrofit(): Retrofit {
         val ts = System.currentTimeMillis().toString()
@@ -21,18 +20,23 @@ object ApiService {
         
         val clientInterceptor = Interceptor { chain ->
             var request: Request = chain.request()
-            val url: HttpUrl = request.url.newBuilder().addQueryParameter("ts", ts)
-                .addQueryParameter("apiKey", apiKey).addQueryParameter("hash", hash).build()
+            val url: HttpUrl = request.url.newBuilder()
+                .addQueryParameter("ts", ts)
+                .addQueryParameter("apikey", apiKey)
+                .addQueryParameter("hash", hash)
+                .build()
             
             request = request.newBuilder().url(url).build()
             chain.proceed(request)
         }
         
-        val client = OkHttpClient.Builder().addInterceptor(clientInterceptor).build()
+        val client = OkHttpClient.Builder()
+            .addInterceptor(clientInterceptor)
+            .build()
         
         return Retrofit.Builder().baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create()).client(client).build()
     }
     
-    val api:MarvelApi = getRetrofit().create(MarvelApi::class.java)
+    val api: MarvelApi = getRetrofit().create(MarvelApi::class.java)
 }

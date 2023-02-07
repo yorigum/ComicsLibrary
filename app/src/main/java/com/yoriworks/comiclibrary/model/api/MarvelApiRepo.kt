@@ -1,5 +1,6 @@
 package com.yoriworks.comiclibrary.model.api
 
+import android.util.Log
 import com.yoriworks.comiclibrary.model.CharactersApiResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import retrofit2.Call
@@ -15,12 +16,15 @@ class MarvelApiRepo(private val api: MarvelApi) {
             override fun onResponse(
                 call: Call<CharactersApiResponse>, response: Response<CharactersApiResponse>
             ) {
+    
+                Log.i("responseNih","$response")
                 if (response.isSuccessful) {
                     response.body()?.let {
                         characters.value = NetworkResult.Success(it)
                     }
                     
                 } else characters.value = NetworkResult.Error(response.message())
+    
             }
             
             override fun onFailure(call: Call<CharactersApiResponse>, t: Throwable) {
