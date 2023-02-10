@@ -2,6 +2,7 @@ package com.yoriworks.comiclibrary.model.api
 
 import com.yoriworks.comiclibrary.BuildConfig
 import com.yoriworks.comiclibrary.getHash
+import com.yoriworks.comiclibrary.utils.Contains.BASE_URL
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -10,7 +11,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiService {
-    private const val BASE_URL = "https://gateway.marvel.com/v1/public/"
     
     private fun getRetrofit(): Retrofit {
         val ts = System.currentTimeMillis().toString()

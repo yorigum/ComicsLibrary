@@ -35,3 +35,5 @@ fun AttributionText(text: String) {
         text = text, modifier = Modifier.padding(start = 8.dp, top = 4.dp), fontSize = 12.sp
     )
 }
+
+fun List<String>.comicsToString() = this.joinToString(separator = ", ")
