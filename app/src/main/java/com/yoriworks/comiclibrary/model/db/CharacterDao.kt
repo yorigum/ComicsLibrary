@@ -1,7 +1,7 @@
 package com.yoriworks.comiclibrary.model.db
 
 import androidx.room.*
-import com.yoriworks.comiclibrary.model.db.Constants.CHARACTER_TABLE
+import com.yoriworks.comiclibrary.utils.Constants.CHARACTER_TABLE
 import kotlinx.coroutines.flow.Flow
 
 @Dao

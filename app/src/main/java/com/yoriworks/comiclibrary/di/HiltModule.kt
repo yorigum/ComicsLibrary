@@ -1,14 +1,11 @@
-package com.yoriworks.comiclibrary
+package com.yoriworks.comiclibrary.di
 
 import android.content.Context
 import androidx.room.Room
 import com.yoriworks.comiclibrary.model.api.ApiService
 import com.yoriworks.comiclibrary.model.api.MarvelApiRepo
-import com.yoriworks.comiclibrary.model.db.CharacterDao
-import com.yoriworks.comiclibrary.model.db.CollectionDb
-import com.yoriworks.comiclibrary.model.db.CollectionDbRepo
-import com.yoriworks.comiclibrary.model.db.CollectionDbRepoImpl
-import com.yoriworks.comiclibrary.model.db.Constants.DB
+import com.yoriworks.comiclibrary.model.db.*
+import com.yoriworks.comiclibrary.utils.Constants.DB
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,6 +26,11 @@ class HiltModule {
     fun provideCharacterDao(collectionDb: CollectionDb) = collectionDb.characterDao()
 
     @Provides
-    fun provideDbRepoImpl(characterDao: CharacterDao): CollectionDbRepo =
-        CollectionDbRepoImpl(characterDao)
+    fun provideNoteDao(collectionDb: CollectionDb) = collectionDb.noteDao()
+
+    @Provides
+    fun provideDbRepoImpl(characterDao: CharacterDao, noteDao: NoteDao): CollectionDbRepo =
+        CollectionDbRepoImpl(characterDao, noteDao)
+
+
 }

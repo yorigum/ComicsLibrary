@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.yoriworks.comiclibrary.comicsToString
 import com.yoriworks.comiclibrary.model.CharacterResult
-import com.yoriworks.comiclibrary.model.db.Constants.CHARACTER_TABLE
+import com.yoriworks.comiclibrary.utils.Constants.CHARACTER_TABLE
 
 @Entity(tableName = CHARACTER_TABLE)
 data class DbCharacter(

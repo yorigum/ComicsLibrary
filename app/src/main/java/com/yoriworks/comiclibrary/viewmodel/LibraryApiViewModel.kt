@@ -18,6 +18,7 @@ class LibraryApiViewModel @Inject constructor(private val repo: MarvelApiRepo) :
     val result = repo.characters
     val queryText = MutableStateFlow("")
     private val queryInput = Channel<String>(Channel.CONFLATED)
+    val characterDetails = repo.characterDetails
     
     init {
         retrieveCharacters()
@@ -39,5 +40,9 @@ class LibraryApiViewModel @Inject constructor(private val repo: MarvelApiRepo) :
     fun onQueryUpdate(input: String) {
         queryText.value = input
         queryInput.trySend(input)
+    }
+
+    fun retrieveSingleCharacter(id:Int){
+        repo.getSingleCharacter(id)
     }
 }
