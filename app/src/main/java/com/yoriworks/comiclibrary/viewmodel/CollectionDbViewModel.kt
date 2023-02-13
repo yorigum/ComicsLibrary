@@ -21,6 +21,7 @@ class CollectionDbViewModel @Inject constructor(private val repo: CollectionDbRe
 
     init {
         getCollection()
+        getNotes()
     }
 
     private fun getCollection() {
