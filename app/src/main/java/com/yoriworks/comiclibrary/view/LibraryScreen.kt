@@ -28,6 +28,7 @@ import com.yoriworks.comiclibrary.CharacterImage
 import com.yoriworks.comiclibrary.Destination
 import com.yoriworks.comiclibrary.model.CharactersApiResponse
 import com.yoriworks.comiclibrary.model.api.NetworkResult
+import com.yoriworks.comiclibrary.model.connectivity.ConnectivityObservable
 import com.yoriworks.comiclibrary.viewmodel.LibraryApiViewModel
 
 @Composable
@@ -36,14 +37,23 @@ fun LibraryScreen(
 ) {
     val result by vm.result.collectAsState()
     val text = vm.queryText.collectAsState()
-    
+    val networkAvailable = vm.networkAvailable.observe()
+        .collectAsState(initial = ConnectivityObservable.Status.Available)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = paddingValues.calculateBottomPadding()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        
+        if(networkAvailable.value == ConnectivityObservable.Status.Unavailable){
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Red), horizontalArrangement = Arrangement.Center) {
+                Text(text = "Network unavailable", fontWeight = FontWeight.Bold, color = Color.White, modifier = Modifier.padding(16.dp))
+            }
+        }
+
         OutlinedTextField(
             value = text.value,
             onValueChange = vm::onQueryUpdate,
@@ -51,7 +61,7 @@ fun LibraryScreen(
             placeholder = { Text(text = "Character") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
         )
-        
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -61,21 +71,21 @@ fun LibraryScreen(
                 is NetworkResult.Initial -> {
                     Text(text = "Search for a character")
                 }
-                
+
                 is NetworkResult.Success -> {
                     ShowCharactersList(result, navController)
                 }
-                
+
                 is NetworkResult.Loading -> {
                     CircularProgressIndicator()
                 }
-                
+
                 is NetworkResult.Error -> {
                     Text(text = "Error: ${result.message}")
                 }
             }
         }
-        
+
     }
 }
 
@@ -99,7 +109,7 @@ fun ShowCharactersList(
                 val description = character.description
                 val context = LocalContext.current
                 val id = character.id
-                
+
                 Column(modifier = Modifier
                     .padding(4.dp)
                     .clip(RoundedCornerShape(5.dp))
@@ -123,12 +133,12 @@ fun ShowCharactersList(
                                 .padding(4.dp)
                                 .width(100.dp)
                         )
-                        
+
                         Column(modifier = Modifier.padding(4.dp)) {
                             Text(text = title ?: "", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                         }
                     }
-                    
+
                     Text(text = description ?: "", maxLines = 4, fontSize = 14.sp)
                 }
             }

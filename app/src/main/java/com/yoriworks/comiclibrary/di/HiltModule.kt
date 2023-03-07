@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.yoriworks.comiclibrary.model.api.ApiService
 import com.yoriworks.comiclibrary.model.api.MarvelApiRepo
+import com.yoriworks.comiclibrary.model.connectivity.ConnectivityMonitor
 import com.yoriworks.comiclibrary.model.db.*
 import com.yoriworks.comiclibrary.utils.Constants.DB
 import dagger.Module
@@ -31,6 +32,10 @@ class HiltModule {
     @Provides
     fun provideDbRepoImpl(characterDao: CharacterDao, noteDao: NoteDao): CollectionDbRepo =
         CollectionDbRepoImpl(characterDao, noteDao)
+
+    @Provides
+    fun provideConnectivityManager(@ApplicationContext context: Context) =
+        ConnectivityMonitor.getInstance(context)
 
 
 }
