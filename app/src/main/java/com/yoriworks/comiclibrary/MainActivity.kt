@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.yoriworks.comiclibrary.ui.theme.BlackBackground
 import com.yoriworks.comiclibrary.ui.theme.ComicsLibraryTheme
 import com.yoriworks.comiclibrary.view.CharacterBottomNav
 import com.yoriworks.comiclibrary.view.CharacterDetailScreen
@@ -46,11 +47,10 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = BlackBackground
                 ) {
                     val navController = rememberNavController()
                     CharactersScaffold(navController = navController, lvm = lvm,cvm = cvm)
-                    
                 }
             }
         }

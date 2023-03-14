@@ -1,10 +1,12 @@
 package com.yoriworks.comiclibrary
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -21,7 +23,7 @@ fun getHash(timestamp: String, privateKey: String, publicKey: String): String {
 
 @Composable
 fun CharacterImage(
-    url: String?, modifier: Modifier, contentScale: ContentScale = ContentScale.FillWidth
+    url: String?, modifier: Modifier, contentScale: ContentScale = ContentScale.Crop
 ) {
     AsyncImage(
         model = url, contentDescription = null, modifier = modifier, contentScale = contentScale
@@ -29,8 +31,10 @@ fun CharacterImage(
     
 }
 
+
+@Preview(showBackground = true)
 @Composable
-fun AttributionText(text: String) {
+fun AttributionText(text: String = "sdsda") {
     Text(
         text = text, modifier = Modifier.padding(start = 8.dp, top = 4.dp), fontSize = 12.sp
     )
