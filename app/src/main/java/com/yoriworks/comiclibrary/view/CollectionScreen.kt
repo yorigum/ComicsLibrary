@@ -20,7 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +31,8 @@ import androidx.navigation.NavHostController
 import com.yoriworks.comiclibrary.CharacterImage
 import com.yoriworks.comiclibrary.model.Note
 import com.yoriworks.comiclibrary.model.db.DbNote
+import com.yoriworks.comiclibrary.ui.theme.BlackBackground
+import com.yoriworks.comiclibrary.ui.theme.DarkGrey
 import com.yoriworks.comiclibrary.ui.theme.GrayBackground
 import com.yoriworks.comiclibrary.ui.theme.GrayTransparentBackground
 import com.yoriworks.comiclibrary.viewmodel.CollectionDbViewModel
@@ -44,88 +46,89 @@ fun CollectionScreen(cvm: CollectionDbViewModel, navController: NavHostControlle
         mutableStateOf(-1)
     }
     
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 56.dp)
+            .background(BlackBackground),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         items(charactersInCollection.value.size) {
             val character = charactersInCollection.value[it]
-            Column {
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(100.dp)
-                    .padding(4.dp)
-                    .clickable {
-                        if (expandedElement.value == character.id) {
-                            expandedElement.value = -1
-                        } else {
-                            expandedElement.value = character.id
-                        }
-                    }) {
-                    CharacterImage(
-                        url = character.thumbnail,
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxHeight(),
-                        contentScale = ContentScale.FillHeight
-                    )
-                    
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(4.dp)
-                            .fillMaxHeight()
-                    ) {
-                        Text(
-                            text = character.name ?: "No name",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 22.sp,
-                            maxLines = 2
-                        )
-                        Text(text = character.comics ?: "", fontStyle = FontStyle.Italic)
-                        
-                    }
-                    
-                    Column(
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .fillMaxHeight()
-                            .padding(4.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Icon(Icons.Outlined.Delete,
-                            contentDescription = null,
-                            modifier = Modifier.clickable {
-                                cvm.deleteCharacter(character)
-                            })
-                        
-                        if (character.id == expandedElement.value) Icon(
-                            Icons.Outlined.KeyboardArrowUp, contentDescription = null
-                        )
-                        else Icon(Icons.Outlined.KeyboardArrowDown, contentDescription = null)
-                    }
-                }
-            }
-            
-            if (character.id == expandedElement.value) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
+            Card(shape = RoundedCornerShape(8.dp), backgroundColor = DarkGrey) {
+                Column() {
+                    Row(modifier = Modifier
                         .fillMaxWidth()
-                        .background(
-                            GrayTransparentBackground
+                        .wrapContentHeight()
+                        .padding(4.dp)
+                        .clickable {
+                            if (expandedElement.value == character.id) {
+                                expandedElement.value = -1
+                            } else {
+                                expandedElement.value = character.id
+                            }
+                        }) {
+                        CharacterImage(
+                            url = character.thumbnail,
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .width(100.dp)
+                                .height(100.dp),
+                            contentScale = ContentScale.Crop
                         )
-                ) {
-                    val filteredNotes = notes.value.filter { note ->
-                        note.characterId == character.id
+        
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(4.dp)
+                                .fillMaxHeight()
+                        ) {
+                            Text(
+                                text = character.name ?: "No name",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp,
+                                maxLines = 2
+                            )
+                            Text(text = character.comics ?: "", fontStyle = FontStyle.Italic)
+            
+                        }
+        
+                        Column(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .fillMaxHeight()
+                                .padding(4.dp),
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Icon(Icons.Outlined.Delete,
+                                contentDescription = null,
+                                modifier = Modifier.clickable {
+                                    cvm.deleteCharacter(character)
+                                })
+            
+                            if (character.id == expandedElement.value) Icon(
+                                Icons.Outlined.KeyboardArrowUp, contentDescription = null
+                            )
+                            else Icon(Icons.Outlined.KeyboardArrowDown, contentDescription = null)
+                        }
                     }
-                    NotesList(filteredNotes, cvm)
-                    CreateNoteForm(character.id, cvm)
+    
+                    if (character.id == expandedElement.value) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            val filteredNotes = notes.value.filter { note ->
+                                note.characterId == character.id
+                            }
+                            NotesList(filteredNotes, cvm)
+                            CreateNoteForm(character.id, cvm)
+                        }
+                    }
+    
                 }
             }
-            
-            Divider(
-                color = Color.LightGray, modifier = Modifier.padding(
-                    top = 4.dp, bottom = 4.dp, start = 20.dp, end = 20.dp
-                )
-            )
         }
     }
 }
@@ -145,12 +148,9 @@ fun NotesList(notes: List<DbNote>, cvm: CollectionDbViewModel) {
                 Text(text = note.title, fontWeight = FontWeight.Bold)
                 Text(text = note.text)
             }
-            Icon(
-                Icons.Outlined.Delete,
-                contentDescription = null,
-                modifier = Modifier.clickable {
-                    cvm.deleteNote(note)
-                })
+            Icon(Icons.Outlined.Delete, contentDescription = null, modifier = Modifier.clickable {
+                cvm.deleteNote(note)
+            })
         }
     }
 }
@@ -170,8 +170,7 @@ fun CreateNoteForm(characterId: Int, cvm: CollectionDbViewModel) {
                 .padding(4.dp)
         ) {
             Text(text = "Add note", fontWeight = FontWeight.Bold)
-            OutlinedTextField(
-                value = newNoteTitle.value,
+            OutlinedTextField(value = newNoteTitle.value,
                 onValueChange = { newNoteTitle.value = it },
                 label = { Text(text = "Note title") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
@@ -181,8 +180,7 @@ fun CreateNoteForm(characterId: Int, cvm: CollectionDbViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                OutlinedTextField(
-                    value = newNoteText.value,
+                OutlinedTextField(value = newNoteText.value,
                     onValueChange = { newNoteText.value = it },
                     label = { Text(text = "Note content") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
